@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Resilience Score | Homieux Media</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #000887;
+            --pink: #ED51C2;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --border: #E0E0E0;
+        }
+
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        body { 
+            font-family: 'Epilogue', sans-serif; 
+            background: var(--white); 
+            color: #1A1A1A; 
+            margin: 0; 
+            line-height: 1.6;
+            text-align: center; /* Strict center alignment */
+        }
+        
+        header { padding: 50px 20px 20px 20px; }
+        .logo-container img { width: 160px; height: auto; display: block; margin: 0 auto; cursor: pointer; }
+        
+        .container { max-width: 750px; margin: 0 auto; padding: 20px; }
+        
+        .card { 
+            background: var(--white); 
+            border: 1px solid var(--border); 
+            padding: 40px; 
+            border-radius: 4px; 
+            box-shadow: 0 4px 20px rgba(0,8,135,0.04); 
+        }
+
+        h1 { color: var(--blue); font-size: 28px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
+        p.subtitle { font-size: 17px; color: #555; margin-bottom: 35px; }
+
+        .btn { 
+            display: inline-block; background: var(--blue); color: white; padding: 18px 30px; 
+            text-decoration: none; border-radius: 2px; font-weight: 600; cursor: pointer; border: none;
+            width: 100%; max-width: 400px; font-size: 16px; transition: opacity 0.2s; 
+            font-family: 'Epilogue', sans-serif; margin: 0 auto;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-pink { background: var(--pink); margin-top: 25px; }
+
+        .sector-context { 
+            background: var(--gray-light); padding: 25px; border-top: 4px solid var(--blue); 
+            font-size: 14px; margin-top: 40px; color: #444;
+        }
+        .sector-tag { font-weight: 800; color: var(--blue); text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 1px; }
+
+        #quiz-container { display: none; }
+        .progress-bar { height: 6px; background: #EEE; margin-bottom: 40px; border-radius: 3px; }
+        .progress-fill { height: 100%; background: var(--pink); width: 0%; transition: width 0.3s ease; }
+        
+        .question-title { font-size: 22px; font-weight: 600; margin-bottom: 35px; color: var(--blue); }
+        .options-list { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .option-btn { 
+            width: 100%; max-width: 500px; padding: 18px; border: 1px solid var(--border); 
+            background: var(--white); cursor: pointer; font-size: 16px; border-radius: 4px;
+            font-family: 'Epilogue', sans-serif; transition: all 0.2s; text-align: center;
+        }
+        .option-btn:hover { border-color: var(--pink); background: #FFF9FC; color: var(--pink); }
+
+        #results-container { display: none; }
+        .score-value { font-size: 64px; font-weight: 800; color: var(--blue); margin: 20px 0; }
+        .board-ready-box { background: var(--blue); color: white; padding: 35px; border-radius: 4px; margin: 30px 0; }
+        .board-ready-text { font-size: 18px; font-style: italic; font-weight: 400; line-height: 1.6; }
+
+        footer { padding: 60px 20px; font-size: 13px; color: #999; }
+        footer a { color: #999; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <a href="https://homieuxmedia.com/">
+            <img src="logo-homieux.png" alt="Homieux Media">
+        </a>
+    </div>
+</header>
+
+<div class="container">
+    <div id="home-screen" class="card">
+        <h1>Margin Resilience Score</h1>
+        <p class="subtitle">Evaluate your organization's ability to protect profitability against Belgian economic pressures in 2025–2026.</p>
+        <button class="btn" onclick="startQuiz()">Start Assessment</button>
+
+        <div class="sector-context">
+            <span class="sector-tag">📍 Belgium Context 2025–2026</span>
+            The automatic wage indexation in Belgium led to a cumulative labor cost increase of over 12% in the 2024-2025 period, directly impacting the net margins of private SMEs.
+            <br>Source: National Bank of Belgium (NBB) 2025
+        </div>
+    </div>
+
+    <div id="quiz-container" class="card">
+        <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+        <div id="question-area">
+            <div class="question-title" id="q-text"></div>
+            <div class="options-list" id="q-options"></div>
+        </div>
+    </div>
+
+    <div id="results-container" class="card">
+        <h1>Executive Analysis</h1>
+        <div class="score-value" id="final-score">0</div>
+        <p id="result-status" style="font-weight: 800; color: var(--pink); font-size: 20px;"></p>
+
+        <div class="sector-context">
+            <span class="sector-tag">📍 Belgium Context 2025–2026</span>
+            Approximately 38% of Belgian businesses reported a decrease in profitability in Q1 2025 due to the continued volatility of energy contracts and raw material costs.
+            <br>Source: FPS Economy 2025
+        </div>
+
+        <div class="board-ready-box">
+            <div class="board-ready-text" id="board-text"></div>
+        </div>
+
+        <div class="sector-context" style="background: white; border: 1px solid var(--border);">
+            <span class="sector-tag">📍 Belgium Context 2025–2026</span>
+            Corporate bankruptcies in the technical services and construction sectors in Belgium increased by 9% in 2024, highlighting a critical lack of pricing power among mid-sized entities.
+            <br>Source: Graydon Belgium 2025
+        </div>
+
+        <a id="cta-button" href="https://calendly.com/homieuxmedia/discovery-call-gratuit-discutons-de-vos-defis" class="btn btn-pink">Schedule Strategy Call – 30 min</a>
+    </div>
+</div>
+
+<footer>
+    © 2026 <a href="https://homieuxmedia.com/">Homieux Media</a> | Margin Resilience Framework
+</footer>
+
+<script>
+    const questions = [
+        { q: "How quickly can you pass labor and energy cost increases to your clients?", opt: [{t:"Immediately", s:10}, {t:"Within 3-6 months", s:5}, {t:"Difficulty or Not at all", s:0}] },
+        { q: "Do you have real-time visibility on gross margin per project or client?", opt: [{t:"Full real-time visibility", s:10}, {t:"Partial visibility", s:5}, {t:"No visibility", s:0}] },
+        { q: "What is the impact of a 20% spike in energy costs on your net profit?", opt: [{t:"Minimal impact", s:10}, {t:"Noticeable pressure", s:5}, {t:"Critical threat", s:0}] },
+        { q: "How dependent is your revenue on your top 3 clients?", opt: [{t:"Under 20%", s:10}, {t:"20% to 50%", s:5}, {t:"Over 50%", s:0}] },
+        { q: "Do you have an active pricing adjustment strategy for 2025–2026?", opt: [{t:"Executed and monitored", s:10}, {t:"Currently in preparation", s:5}, {t:"No active strategy", s:0}] },
+        { q: "Can you reduce fixed overheads by 10% within 30 days if required?", opt: [{t:"Yes, easily", s:10}, {t:"Potentially", s:5}, {t:"No", s:0}] },
+        { q: "Is automation/AI currently used to offset administrative wage indexation?", opt: [{t:"Systematically", s:10}, {t:"Experimentally", s:5}, {t:"Not yet", s:0}] },
+        { q: "Is there a dedicated financial buffer for unexpected wage indexation rounds?", opt: [{t:"Yes, fully funded", s:10}, {t:"Partially", s:5}, {t:"No", s:0}] },
+        { q: "Is your pricing based on 'Cost-Plus' or 'Value-Based' models?", opt: [{t:"Value-Based", s:10}, {t:"Hybrid", s:5}, {t:"Cost-Plus", s:0}] },
+        { q: "Do you have pre-vetted alternative suppliers for critical technical components?", opt: [{t:"Multiple alternatives", s:10}, {t:"One backup", s:5}, {t:"No backup", s:0}] }
+    ];
+
+    let currentIdx = 0;
+    let totalScore = 0;
+
+    function startQuiz() {
+        document.getElementById('home-screen').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = questions[currentIdx];
+        document.getElementById('q-text').innerText = q.q;
+        const optionsHtml = q.opt.map(o => `<button class="option-btn" onclick="handleAnswer(${o.s})">${o.t}</button>`).join('');
+        document.getElementById('q-options').innerHTML = optionsHtml;
+        document.getElementById('progress').style.width = ((currentIdx / questions.length) * 100) + '%';
+        window.scrollTo(0, 0);
+    }
+
+    function handleAnswer(points) {
+        totalScore += points;
+        currentIdx++;
+        if (currentIdx < questions.length) renderQuestion();
+        else showResults();
+    }
+
+    function showResults() {
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('results-container').style.display = 'block';
+        document.getElementById('final-score').innerText = totalScore + "/100";
+        window.scrollTo(0, 0);
+
+        let status, insight;
+        if (totalScore >= 80) {
+            status = "🟦 Strategic Advantage Zone";
+            insight = "Your margins are exceptionally resilient. You possess the pricing power and operational flexibility to outpace current Belgian inflationary cycles.";
+        } else if (totalScore >= 60) {
+            status = "🟩 Resilient Margin";
+            insight = "Solid foundation. However, further overhead optimization is required to maintain profitability amidst the 2026 economic outlook.";
+        } else if (totalScore >= 40) {
+            status = "🟨 Under Pressure";
+            insight = "Your margins are vulnerable. External shocks such as wage indexation or energy spikes will directly erode your net results.";
+        } else if (totalScore >= 20) {
+            status = "🟧 Fragile Margin Zone";
+            insight = "Immediate action required. Your current pricing model cannot sustain the increasing operational costs of the Belgian market.";
+        } else {
+            status = "🟥 Critical Risk Zone";
+            insight = "Strategic survival is at stake. Your structure lacks the necessary levers to absorb systemic cost increases. Urgent repositioning is mandatory.";
+        }
+
+        document.getElementById('result-status').innerText = status;
+        document.getElementById('board-text').innerText = `« ${insight} »`;
+    }
+</script>
+</body>
+</html>
